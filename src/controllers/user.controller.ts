@@ -1,4 +1,4 @@
-import { CustomRequest } from "../middlewares/auth.middleware";
+import { AuthenticatedRequest } from "../interfaces/auth.interface";
 import { User } from "../models/user.model";
 import { ApiError } from "../utils/ApiError";
 import { ApiResponse } from "../utils/ApiResponse";
@@ -107,8 +107,7 @@ const loginUser = asyncHandler( async( req, res) => {
     )
 });
 
-
-const logoutUser = asyncHandler( async (req:CustomRequest, res) => {
+const logoutUser = asyncHandler( async (req:AuthenticatedRequest, res) => {
 
   await User.findByIdAndUpdate(
     req.user?._id,
@@ -134,9 +133,35 @@ const logoutUser = asyncHandler( async (req:CustomRequest, res) => {
     .json(new ApiResponse (200, {}, "User logged Out"));
 });
 
+const userAccountUpdate = asyncHandler( async(req: AuthenticatedRequest, res) => {
+
+  const validateUser = await UserZod.parseAsync(req.body);
+  const {fullname, email,} = validateUser;
+
+  if(!(fullname || email)) {
+    throw new ApiError(400, "All fields are required");
+  }
+
+  const user = await User.findByIdAndUpdate(
+    req.user?._id,
+    {
+      $set: {
+        fullname,
+        email
+      }
+    },
+    {new: true}
+  ).select("-password");
+
+  return res.status(200).json(
+    new ApiResponse(200, user, "Account details updated")
+  );
+});
+
 
 export {
   registerUser,
   loginUser,
-  logoutUser
+  logoutUser,
+  userAccountUpdate
 }

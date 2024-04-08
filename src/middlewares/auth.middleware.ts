@@ -4,12 +4,9 @@ import { ApiError } from "../utils/ApiError";
 import { asyncHandler } from "../utils/asyncHandler";
 import jwt from "jsonwebtoken";
 import { IUser } from "../interfaces/user.interface";
+import { AuthenticatedRequest } from "../interfaces/auth.interface";
 
-export interface CustomRequest extends Request {
-  user?: IUser;
-}
-
-export const verifyJWT = asyncHandler(async (req: CustomRequest, _res: Response, next: NextFunction) => {
+export const verifyJWT = asyncHandler(async (req: AuthenticatedRequest, _res: Response, next: NextFunction) => {
   try {
     const token = req.cookies?.accessToken || req.header("Authorization")?.replace("Bearer ", "");
 

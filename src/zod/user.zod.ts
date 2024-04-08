@@ -4,7 +4,7 @@ const UserZod = z.object({
   username: z.string(),
   fullname: z.string(),
   email: z.string().email(),
-  password: z.string().min(8)
+  password: z.string().min(8),
 });
 
 export { UserZod }
