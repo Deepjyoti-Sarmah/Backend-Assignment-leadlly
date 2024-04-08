@@ -1,4 +1,5 @@
-import { User} from "../models/user.model";
+import { CustomRequest } from "../middlewares/auth.middleware";
+import { User } from "../models/user.model";
 import { ApiError } from "../utils/ApiError";
 import { ApiResponse } from "../utils/ApiResponse";
 import { asyncHandler } from "../utils/asyncHandler";
@@ -107,25 +108,10 @@ const loginUser = asyncHandler( async( req, res) => {
 });
 
 
-const logoutUser = asyncHandler( async (req, res) => {
-  const validateUser = await UserZod.parseAsync(req.body);
-  const {username, email} = validateUser;
-
-  if(!(username || email)) {
-    throw new ApiError(400, "usernam or email is required");
-  }
-
-  const user = await User.findOne({
-    $or: [{username}, {email}]
-  });
-
-  if (!user) {
-    throw new ApiError(404, "user doesnot exists");
-  }
-
+const logoutUser = asyncHandler( async (req:CustomRequest, res) => {
 
   await User.findByIdAndUpdate(
-    user._id,
+    req.user?._id,
     {
       $unset: {
         refreshToken: 1
@@ -147,6 +133,7 @@ const logoutUser = asyncHandler( async (req, res) => {
     .clearCookie("refreshToken", options)
     .json(new ApiResponse (200, {}, "User logged Out"));
 });
+
 
 export {
   registerUser,
