@@ -8,12 +8,7 @@ app.use(cors({
   credentials: true
 }));
 
-
-// app.get("/", (req, res) => {
-//   return res.status(200).json({
-//     msg: "health check"
-//   });
-// });
+app.use(express.json());
 
 import userRouter from "./routes/user.route";
 import productRouter from "./routes/product.route";
