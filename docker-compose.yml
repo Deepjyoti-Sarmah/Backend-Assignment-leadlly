@@ -5,16 +5,16 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: app
+    image: backend_app_leadlly
     container_name: backend_leadlly
     restart: unless-stopped
     env_file: .env
     ports:
-      - '$PORT:$PORT'
-    links:
-      - mongo
+      - '${PORT}:${PORT}'
     depends_on:
       - mongo
+    networks:
+      - my-network
 
   mongo:
     image: mongo
@@ -25,12 +25,17 @@ services:
       - MONGO_INITDB_ROOT_USERNAME=$DB_ADMIN
       - MONGO_INITDB_ROOT_PASSWORD=$DB_PWD
       - MONGO_INITDB_DATABASE=$DB_NAME
-
     ports:
-      - '$DB_PORT:27017'
+      - '${DB_PORT}:27017'
     volumes:
       - dbdata:/data/db
+    networks:
+      - my-network
 
 volumes:
   dbdata:
-   
+
+
+networks:
+  my-network:
+    name: my-network
