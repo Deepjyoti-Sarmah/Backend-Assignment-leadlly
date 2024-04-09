@@ -23,13 +23,10 @@ const createProduct = asyncHandler( async (req:AuthenticatedRequest , res) => {
   const validateProduct = await ProductZod.parseAsync(req.body);
   const {title, description, price, stocks, category, brand, owner} = validateProduct;
 
-  // if(
-  //   [title, description, price, stocks, category, brand, owner].some((field) => field?.trim() === "")
-  // ){
-  //   throw new ApiError(400, "All fields are required");
+  if( !(title || description || price || stocks || category || brand)){
+    throw new ApiError(400, "All fields are required");
+  }
 
-  // }
-  //
   const product = await Product.create({
     title: title.toLowerCase(),
     description: description.toLowerCase(),
@@ -40,7 +37,7 @@ const createProduct = asyncHandler( async (req:AuthenticatedRequest , res) => {
     owner: user?._id
   });
 
-  const createdProduct = await Product.findById(product._id);
+  const createProduct = await Product.findById(product._id);
 
   if(!createProduct) {
     throw new ApiError(500, "Something went wrong while creating product");

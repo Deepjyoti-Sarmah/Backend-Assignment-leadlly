@@ -7,7 +7,7 @@ const ProductZod = z.object({
   stocks: z.number().int().positive(),
   category: z.string().min(1).max(50).trim(),
   brand: z.string().min(1).max(50).trim(),
-  owner: z.string().min(1),
+  owner: z.string().min(1).optional(),
 });
 
 export { ProductZod };

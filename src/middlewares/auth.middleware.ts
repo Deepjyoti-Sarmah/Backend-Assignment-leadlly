@@ -18,9 +18,9 @@ export const verifyJWT = asyncHandler(async (req: AuthenticatedRequest, _res: Re
       throw new ApiError(500, "ACCESS_TOKEN_SECRET is not defined");
     }
 
-    const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+    const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET) as IUser;
 
-    const user = await User.findById((decodedToken as IUser)?._id).select("-password -refreshToken");
+    const user = await User.findById(decodedToken._id).select("-password -refreshToken");
 
     if (!user) {
       throw new ApiError(401, "Invalid Access Token");
@@ -31,6 +31,4 @@ export const verifyJWT = asyncHandler(async (req: AuthenticatedRequest, _res: Re
   } catch (error) {
     throw new ApiError(401, (error as Error)?.message || "Invalid access token");
   }
-
-
 });

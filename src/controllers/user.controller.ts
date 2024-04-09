@@ -38,13 +38,13 @@ const registerUser = asyncHandler( async( req, res) => {
     $or: [{username}, {email}]
   });
 
-  if (!existUser) {
+  if (existUser) {
     throw new ApiError(409, "User with email and username already exists");
   }
 
   const user = await User.create({
     fullname: fullname,
-    username: username.toLowerCase(),
+    username: username?.toLowerCase(),
     email: email,
     password: password
   });
@@ -134,27 +134,71 @@ const logoutUser = asyncHandler( async (req:AuthenticatedRequest, res) => {
 });
 
 const userAccountUpdate = asyncHandler( async(req: AuthenticatedRequest, res) => {
+  // const user = req.user;
+  // if (!user) {
+  //   throw new ApiError(401, 'Unauthorized');
+  // }
 
-  const validateUser = await UserZod.parseAsync(req.body);
-  const {fullname, email,} = validateUser;
+  // const validateUser = await UserZod.parseAsync(req.body);
+  // console.log(validateUser);
+  // const { fullname, email, username, password } = validateUser;
 
-  if(!(fullname || email)) {
-    throw new ApiError(400, "All fields are required");
+  // if (!(fullname || email || username || password)) {
+  //   throw new ApiError(400, 'All fields are required');
+  // }
+
+  // if (password) {
+  //   const isPasswordValid = await user?.isPasswordCorrect(password);
+  //   if (!isPasswordValid) {
+  //     throw new ApiError(401, 'Invalid user credentials');
+  //   }
+  // }
+
+  // const updatedUser = await User.findByIdAndUpdate(
+  //   user?._id,
+  //   {
+  //     $set: {
+  //       fullname: fullname,
+  //       email: email,
+  //       username: username,
+  //     },
+  //   },
+  //   { new: true }
+  // ).select('-password');
+
+  // return res.status(200).json(new ApiResponse(200, updatedUser, 'Account details updated'));
+  //
+  const user = await User.findById(req.user?._id);
+  if (!user) {
+    throw new ApiError(404, "User does not exist");
   }
 
-  const user = await User.findByIdAndUpdate(
-    req.user?._id,
+  const validateUser = await UserZod.parseAsync(req.body);
+  const {fullname, username, email, password} = validateUser;
+
+  if(!(fullname || username || email || password)) {
+    throw new ApiError(400, "All field are required");
+  }
+
+  const isPasswordValid = await user.isPasswordCorrect(password);
+  if (!isPasswordValid) {
+    throw new ApiError(401, "Invalid User Credentials");
+  }
+
+  const changedUser = await User.findByIdAndUpdate(
+    user._id,
     {
       $set: {
-        fullname,
-        email
+        fullname: fullname,
+        username: username,
+        email: email,
       }
     },
     {new: true}
   ).select("-password");
 
   return res.status(200).json(
-    new ApiResponse(200, user, "Account details updated")
+    new ApiResponse(200, changedUser, "User Credentials updated")
   );
 });
 
