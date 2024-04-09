@@ -1,0 +1,36 @@
+version: '3.9'
+
+services:
+  app: 
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: app
+    container_name: backend_leadlly
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      - '$PORT:$PORT'
+    links:
+      - mongo
+    depends_on:
+      - mongo
+
+  mongo:
+    image: mongo
+    container_name: mongo_leadlly
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=$DB_ADMIN
+      - MONGO_INITDB_ROOT_PASSWORD=$DB_PWD
+      - MONGO_INITDB_DATABASE=$DB_NAME
+
+    ports:
+      - '$DB_PORT:27017'
+    volumes:
+      - dbdata:/data/db
+
+volumes:
+  dbdata:
+   
