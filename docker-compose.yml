@@ -1,41 +1,33 @@
 version: '3.9'
 
 services:
-  app: 
+ mongo:
+    image: mongo
+    container_name: mongo_leadlly
+    restart: unless-stopped
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=password
+      - MONGO_INITDB_DATABASE=leadlly
+    ports:
+      - '27017:27017'
+    volumes:
+      - dbdata:/data/db
+
+ app:
     build:
       context: .
       dockerfile: Dockerfile
     image: backend_app_leadlly
     container_name: backend_leadlly
     restart: unless-stopped
-    env_file: .env
+    environment:
+      - MONGODB_URI=mongodb:/admin:password@localhost:27017/leadlly 
     ports:
-      - '${PORT}:${PORT}'
+      - '8080:8080'
     depends_on:
       - mongo
-    networks:
-      - my-network
-
-  mongo:
-    image: mongo
-    container_name: mongo_leadlly
-    restart: unless-stopped
-    env_file: .env
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=$DB_ADMIN
-      - MONGO_INITDB_ROOT_PASSWORD=$DB_PWD
-      - MONGO_INITDB_DATABASE=$DB_NAME
-    ports:
-      - '${DB_PORT}:27017'
-    volumes:
-      - dbdata:/data/db
-    networks:
-      - my-network
 
 volumes:
-  dbdata:
+ dbdata:
 
-
-networks:
-  my-network:
-    name: my-network

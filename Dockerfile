@@ -4,15 +4,13 @@ COPY package*.json tsconfig.json ./
 RUN apk add --no-cache python3 make g++
 RUN npm install
 
-ARG PORT=8080
-
 FROM base AS development 
 COPY . .
+EXPOSE 8080
 CMD [ "npm", "run", "dev" ]
 
 FROM base AS production
 COPY . .
 RUN npm prune --production
+EXPOSE 8080
 CMD [ "npm", "run", "start" ]
-
-EXPOSE ${PORT}

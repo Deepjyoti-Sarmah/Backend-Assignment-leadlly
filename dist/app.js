@@ -13,8 +13,8 @@ app.use((0, cors_1.default)({
     origin: process.env.CORS_ORIGIN,
     credentials: true
 }));
-app.get("/", (req, res) => {
-    return res.status(200).json({
-        msg: "health check"
-    });
-});
+app.use(express_1.default.json());
+const user_route_1 = __importDefault(require("./routes/user.route"));
+const product_route_1 = __importDefault(require("./routes/product.route"));
+app.use("/api/v1/users", user_route_1.default);
+app.use("/api/v1/products", product_route_1.default);
