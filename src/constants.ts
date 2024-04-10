@@ -1,1 +1,1 @@
-// export const MONGODB_URI = `mongodb://${process.env.DB_ADMIN}:${process.env.DB_PWD}@${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`;
+export const MONGODB_URI = `mongodb://${process.env.DB_USER}:${process.env.DB_PASS}@mongo:27017/${process.env.DB_NAME}`;

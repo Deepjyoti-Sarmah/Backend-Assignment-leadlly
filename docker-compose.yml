@@ -5,12 +5,8 @@ services:
     image: mongo
     container_name: mongo_leadlly
     restart: unless-stopped
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=admin
-      - MONGO_INITDB_ROOT_PASSWORD=password
-      - MONGO_INITDB_DATABASE=leadlly
     ports:
-      - '27017:27017'
+      - 27017:27017
     volumes:
       - dbdata:/data/db
 
@@ -22,12 +18,12 @@ services:
     container_name: backend_leadlly
     restart: unless-stopped
     environment:
-      - MONGODB_URI=mongodb:/admin:password@localhost:27017/leadlly 
+      PORT: 8080
+      MONGODB_URI: mongodb://admin:password@mongo:27017/leadlly
     ports:
-      - '8080:8080'
+      - 8080:8080
     depends_on:
       - mongo
 
 volumes:
  dbdata:
-
