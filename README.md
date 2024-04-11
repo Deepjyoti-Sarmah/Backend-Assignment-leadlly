@@ -72,7 +72,7 @@
   }
   ```
 
-- Register
+- Login
   - Routes
   ```
   POST http://localhost:8080/api/v1/users/login
