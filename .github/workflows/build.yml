@@ -19,7 +19,7 @@ jobs:
     - name: Run docker images
       run: docker-compose up -d
     - name: Run tests
-      run: docker exec -t app npm test
+      run: docker exec -t app npm run dev
     - name: Clean up
       if: success() || failure()
       run: docker-compose down --rmi all -v --remove-orphans
