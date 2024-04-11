@@ -1,34 +1,25 @@
-name: CI on Pull Request
+name: Docker Compose CI
 
 on:
+  push:
+    branches: [ "master" ]
   pull_request:
-    branches:
-      - master
+    branches: [ "master" ]
 
 jobs:
-
   build:
     runs-on: ubuntu-latest
-    
-    services:
-      mongo:
-        image: mongo
-        ports:
-          - 27017:27017
-        
     steps:
-    - uses: actions/checkout@v3
-    
-    - name: Use Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '20'
-        
-    - name: Install Dependencies
-      run: npm install
-      
-    - name: Generate Mongoose Models
-      run: npm run build
-    
-    - name: Run Build
-      run: npm run build 
+    - name: Checkout code
+      uses: actions/checkout@v3
+    - name: Create .env
+      run: cp .env.example .env
+    - name: Build docker images
+      run: docker-compose build
+    - name: Run docker images
+      run: docker-compose up -d
+    - name: Run tests
+      run: docker exec -t app npm test
+    - name: Clean up
+      if: success() || failure()
+      run: docker-compose down --rmi all -v --remove-orphans
