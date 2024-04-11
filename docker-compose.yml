@@ -10,7 +10,7 @@ services:
     restart: unless-stopped
     env_file: .env
     environment:
-      - MONGODB_URI=mongodb://${DB_ADMIN}:${DB_PASSWORD}@mongo:27017/${DB_NAME}?authSource=admin
+      - MONGODB_URI=mongodb://${DB_ADMIN}:${DB_PASSWORD}@localhost:27017/${DB_NAME}?authSource=admin
     ports:
       - "${PORT}:${PORT}"
     depends_on:

@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-require("dotenv").config({ path: './env' });
+require("dotenv").config({ path: './.env' });
 const app_1 = require("./app");
 const db_1 = __importDefault(require("./db"));
 (() => __awaiter(void 0, void 0, void 0, function* () {
