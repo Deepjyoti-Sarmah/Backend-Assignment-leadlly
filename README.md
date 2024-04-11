@@ -8,8 +8,10 @@
 4. Mongoose
 5. Mongodb
 6. Zod
-7. Docker
-8. JWT
+7. JWT
+8. Docker
+9. CI/CD
+
 
 ## How to build and run this project
 
